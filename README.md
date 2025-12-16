@@ -1,4 +1,4 @@
-# Furniture & Decoration E-Commerce Mobile App
+# Furniture & Decoration Mobile App
 
 ## Presentation Document
 
