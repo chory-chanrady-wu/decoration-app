@@ -10,10 +10,14 @@
 2. Features & Functionality
 3. Technical Architecture
 4. User Interface
-5. Payment Integration
+5. Payment
 6. Technical Stack
 7. Project Structure
 8. Future Enhancements
+9. Quality Assurance
+10.Installation & Setup
+11.Future Enhancements
+12.Conclusion
 
 ---
 
