@@ -15,9 +15,9 @@
 7. Project Structure
 8. Future Enhancements
 9. Quality Assurance
-10.Installation & Setup
-11.Future Enhancements
-12.Conclusion
+10. Installation & Setup
+11. Future Enhancements
+12. Conclusion
 
 ---
 
