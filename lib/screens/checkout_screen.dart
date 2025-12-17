@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../models/models.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -23,6 +25,68 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final TextEditingController _addressController = TextEditingController();
   bool _isProcessing = false;
   final ImagePicker _picker = ImagePicker();
+
+  // Telegram Bot Configuration
+  // Replace with your bot token and chat ID
+  final String _telegramBotToken =
+      '8260943741:AAG5B9KNdklCROvnRtCxU7S3I8ZBX0Lsad0';
+  final String _telegramChatId = '755043032';
+  String? _invoiceNumber;
+
+  String _generateInvoiceNumber() {
+    final now = DateTime.now();
+    final yyyy = now.year.toString();
+    final mm = now.month.toString().padLeft(2, '0');
+    final dd = now.day.toString().padLeft(2, '0');
+    final hh = now.hour.toString().padLeft(2, '0');
+    final min = now.minute.toString().padLeft(2, '0');
+    final ss = now.second.toString().padLeft(2, '0');
+    return 'INV-$yyyy$mm$dd-$hh$min$ss';
+  }
+
+  Future<void> _sendTelegramNotification({
+    required String receiptName,
+    required String invoiceNumber,
+  }) async {
+    final orderDetails =
+        '''
+🛍️ New Order Received!
+
+🧾 Invoice: $invoiceNumber
+
+👤 Customer: ${_nameController.text}
+📱 Phone: ${_phoneController.text}
+📍 Address: ${_addressController.text}
+
+💰 Total: \$${widget.total.toStringAsFixed(2)}
+
+📦 Items:
+${widget.cartItems.map((item) => '• [ID ${item.product.id}] ${item.product.name} x${item.quantity} (\$${(item.product.price * item.quantity).toStringAsFixed(2)})').join('\n')}
+
+📎 Receipt: $receiptName (uploaded)
+✅ Receipt uploaded successfully!
+''';
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://api.telegram.org/bot$_telegramBotToken/sendMessage'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'chat_id': _telegramChatId,
+          'text': orderDetails,
+          'parse_mode': 'HTML',
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('✅ Telegram notification sent successfully');
+      } else {
+        print('❌ Failed to send Telegram notification: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ Error sending Telegram notification: $e');
+    }
+  }
 
   Future<void> _uploadReceipt(BuildContext dialogContext) async {
     try {
@@ -64,7 +128,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
             actions: [
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  // Send Telegram notification with receipt filename
+                  final invoiceNumber =
+                      _invoiceNumber ?? _generateInvoiceNumber();
+                  _invoiceNumber = invoiceNumber;
+                  await _sendTelegramNotification(
+                    receiptName: image.name,
+                    invoiceNumber: invoiceNumber,
+                  );
+
+                  if (!mounted) return;
                   Navigator.of(context).pop(); // Close receipt preview
                   widget.cartItems.clear();
                   Navigator.of(dialogContext).pop(); // Close QR dialog
@@ -95,6 +169,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     super.dispose();
   }
 
+  // ignore: unused_element
   String _generateOrderData() {
     final itemsList = widget.cartItems
         .map((item) => '${item.product.name}(${item.quantity})')
@@ -114,6 +189,7 @@ Date: ${DateTime.now().toString().split('.')[0]}
 
   void _submitOrder() {
     if (_formKey.currentState!.validate()) {
+      _invoiceNumber = _generateInvoiceNumber();
       // Show confirmation dialog with QR code immediately
       showDialog(
         context: context,

@@ -40,6 +40,7 @@ A modern Flutter-based mobile application for buying and selling furniture and h
 ✅ Enable cart management with quantity control  
 ✅ Integrate secure payment processing  
 ✅ Capture payment receipts for verification
+✅ Intregrated with telegram bot
 
 ---
 
@@ -87,12 +88,17 @@ A modern Flutter-based mobile application for buying and selling furniture and h
 - **Multi-Step Checkout**
   1. Order Summary Display
   2. Customer Information Form
-  3. Payment Details
-  4. Receipt Upload
+  3. Invoice Generation (INV-YYYYMMDD-HHMMSS)
+  4. Payment Details
+  5. Receipt Upload
 - **Form Validation**
   - Name: minimum 3 characters
   - Phone: minimum 9 digits, format validation
   - Address: minimum 10 characters
+- **Invoice System**
+  - Automatic invoice number generation
+  - Unique timestamp-based format
+  - Included in order confirmation
 
 ### 2.5 KHQR Payment Integration
 
@@ -106,7 +112,7 @@ A modern Flutter-based mobile application for buying and selling furniture and h
   - Direct payment URL encoding
   - One-tap payment capability
 
-### 2.6 Receipt Upload
+### 2.6 Receipt Upload & Notifications
 
 - **Image Selection**
   - Gallery/file picker integration
@@ -115,8 +121,14 @@ A modern Flutter-based mobile application for buying and selling furniture and h
   - Show uploaded image thumbnail
   - Confirmation before order completion
   - Cross-platform compatible (Image.memory)
+- **Telegram Bot Integration**
+  - Automatic order notification to merchant
+  - Includes invoice number, customer details, and product IDs
+  - Receipt filename tracking
+  - Real-time order alerts
 - **Order Completion**
   - Cart automatically cleared
+  - Telegram notification sent
   - Return to home screen
   - Order status confirmation
 
@@ -196,7 +208,7 @@ class CartItem {
 - **MaterialPageRoute Navigation**
   - Push/pop navigation stack
   - Modal dialogs for confirmations
-  - Splash → Home → Product/Cart → Checkout flow
+  - Splash → Home → Product/Cart → Checkout → Payment → Receipt Upload → Telegram Alert
 
 ---
 
@@ -273,16 +285,18 @@ class CartItem {
 ### 5.2 Payment Flow
 
 1. Customer reviews order
-2. Clicks "Upload Receipt"
-3. Scans KHQR code with banking app
-4. Completes payment
-5. Screenshots receipt
-6. Uploads image to app
-7. Order confirmed
+2. System generates unique invoice number
+3. Displays KHQR payment card
+4. Customer scans QR code with banking app
+5. Completes payment in bank app
+6. Screenshots payment receipt
+7. Uploads receipt image to app
+8. System sends Telegram notification to merchant
+9. Order confirmed and cart cleared
 
 ### 5.3 ABA Bank Integration
 
-- **Payment URL**: `https://pay.ababank.com/oRF8/elnko2u1`
+- **Payment URL**: `https://pay.ababank.com/.../example`
 - **Automatic Opening**: Clicking QR opens bank app
 - **Secure**: Direct link to ABA infrastructure
 - **User-Friendly**: One-tap payment on mobile
@@ -305,6 +319,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   qr_flutter: ^4.1.0           # QR code generation
   image_picker: ^1.0.7         # Receipt upload
+  http: ^1.1.0                 # Telegram bot integration
 ```
 
 ### 6.3 Supported Platforms
@@ -320,6 +335,7 @@ dependencies:
 
 - **image_picker**: Cross-platform image selection
 - **qr_flutter**: Professional QR code generation
+- **http**: Telegram API integration for order notifications
 - **Material Icons**: 1000+ built-in icons
 
 ---
@@ -374,6 +390,7 @@ dependencies:
 
    - Form: Fill name, phone, address
    - Validation: Real-time feedback
+   - Invoice: Auto-generated unique ID
    - Progress: Step-by-step indication
 
 5. **Payment**
@@ -381,8 +398,11 @@ dependencies:
    - Display: KHQR card with QR code
    - Action: User scans with bank app
    - Upload: Receipt image capture
+   - Preview: Review receipt before confirming
 
 6. **Order Complete**
+   - Notification: Telegram alert sent to merchant
+   - Details: Invoice number, customer info, products with IDs
    - Confirmation: Success message
    - State: Cart cleared
    - Next: Return to home screen
@@ -398,6 +418,8 @@ dependencies:
 - ✅ Navigation flows (all screens)
 - ✅ Image upload (file handling)
 - ✅ State management (updates)
+- ✅ Invoice generation (unique IDs)
+- ✅ Telegram API integration (notifications)
 
 ### Error Handling
 
@@ -482,14 +504,18 @@ flutter run -d windows  # or -d chrome, -d android, etc.
 ✅ **Production Ready** - Professional UI/UX  
 ✅ **Well Structured** - Clean architecture and modular code  
 ✅ **Scalable** - Ready for backend integration  
-✅ **User Friendly** - Intuitive navigation and forms
+✅ **User Friendly** - Intuitive navigation and forms  
+✅ **Real-time Notifications** - Telegram bot integration for instant order alerts  
+✅ **Invoice System** - Automated invoice generation and tracking
 
 ### Business Impact
 
 - 📱 Cross-platform reach (mobile, web, desktop)
 - 💰 KHQR payment integration (Cambodia market ready)
 - 🛍️ Complete e-commerce solution
-- 📈 Foundation for business growth
+- � Real-time order notifications via Telegram
+- 📝 Automated invoice generation and tracking
+- �� Foundation for business growth
 
 ### Technical Excellence
 
@@ -504,6 +530,6 @@ flutter run -d windows  # or -d chrome, -d android, etc.
 
 For questions or improvements, refer to the project documentation or contact the development team.
 
-**Project Completed**: December 14, 2025  
+**Project Completed**: December 148, 2025  
 **Status**: Production Ready ✅  
-**Version**: 1.0.0
+**Version**: 1.10
