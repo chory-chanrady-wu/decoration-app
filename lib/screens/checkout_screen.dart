@@ -29,8 +29,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   // Telegram Bot Configuration
   // Replace with your bot token and chat ID
   final String _telegramBotToken =
-      '8260943741:AAG5B9KNdklCROvnRtCxU7S3I8ZBX0Lsad0';
-  final String _telegramChatId = '755043032';
+      'YOUR_TELEGRAM_BOT_TOKEN';
+  final String _telegramChatId = 'CHAT_ID';
   String? _invoiceNumber;
 
   String _generateInvoiceNumber() {
